@@ -1,0 +1,62 @@
+
+package org.firstinspires.ftc.teamcode.hardware.subsystems;
+
+import com.pedropathing.follower.Follower;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
+
+public class outtake {
+    private DcMotorEx turretMotor;
+    private DcMotorEx shooterTop;
+    private DcMotorEx shooterBottom;
+    private Servo hoodServo;
+
+    boolean blueSide;
+
+    public void init(HardwareMap hw, boolean blueSide) {
+        turretMotor = hw.get(DcMotorEx.class, "turret");
+        shooterTop = hw.get(DcMotorEx.class, "shooterTop");
+        shooterTop.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterTop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterTop.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterBottom = hw.get(DcMotorEx.class, "shooterBottom");
+        shooterBottom.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterBottom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterBottom.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hoodServo = hw.get(Servo.class, "hood");
+        this.blueSide = blueSide;
+    }
+
+    public void aim(Follower follower) {
+//        double px = follower.getPose().getX() + follower.getVelocity().getYComponent() * 0.6;
+//        double py = follower.getPose().getX() + follower.getVelocity().getYComponent() * 0.6;
+//        double gx = blueSide ? 0 : 144;
+//
+//        double dx = gx - px;
+//        double dy = 144 - py;
+//
+//        double dis = Math.hypot(dx, dy);
+//        double goalHeadingField = Math.toDegrees(Math.atan2(dy, dx));
+//        double turretTarget = goalHeadingField - Math.toDegrees(follower.getHeading());
+//        double turretAngle = turretMotor.getCurrentPosition() / 3.21;
+//        double target = normA(turretTarget);
+//        target = clamp(target, -150, 150);
+//        turretMotor.setPower(turretController.calculate(turretAngle, target));
+//
+//        double vel = shooterController.calculate(shooterTop.getVelocity(), shooterPower.get(dis));
+//        double vel1 = shooterController.calculate(shooterBottom.getVelocity(), shooterPower.get(dis));
+//
+//        shooterTop.setPower(vel);
+//        shooterBottom.setPower(vel1);
+//        hoodServo.setPosition(hoodAngle.get(dis));
+
+
+//        double turretAngle = turretMotor.getCurrentPosition() / 3.21;
+//        turretMotor.setPower(turretController.calculate(turretAngle, turretAngle));
+
+    }
+}
