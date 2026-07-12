@@ -1,22 +1,31 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import static com.pedropathing.ivy.pedro.PedroCommands.follow;
+
+
+import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.ivy.Command;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.limelightvision.LLResult;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
+import org.firstinspires.ftc.teamcode.pedroPathing.Tuning;
 
 import java.util.function.Supplier;
 
-public class Vcons {
-    private hackingHoundsHardware robot = new hackingHoundsHardware();
+public class Vcons{
+    private hackingHoundsHardware robot;
+    private Follower follower;
 
-    public double robX = robot.pinpoint.getPosX(DistanceUnit.INCH);
-    public double robY = robot.pinpoint.getPosY(DistanceUnit.INCH);
-
+    public Vcons(hackingHoundsHardware robot, Follower follower) {
+        this.robot = robot;
+        this.follower = follower;
+    }
     double fieldX;
     double fieldY;
     double pollenX;
@@ -25,39 +34,69 @@ public class Vcons {
     double llheight = 8;
     double polheight = 1.45;
 
+    Pose robPose;
     double llangle = 25;
-
-    LLResult result = robot.limelight.getLatestResult();
-    double tx = result.getTx();
-    double ty = result.getTy();
-
-    double heading = robot.pinpoint.getHeading(AngleUnit.RADIANS);
-    double targetang = llangle + ty;
     double targetHeight = llheight - polheight;
 
-    public double getPollenDis(){
-        return Math.tan(Math.toRadians(targetang)) * targetHeight;
-    }
-    public double getPollenOffset(){
-        return Math.tan(Math.toRadians(tx)) * getPollenDis();
-    }
     public Pose createPollenPose(){
-        fieldX = (getPollenDis() * Math.cos(heading)) - (getPollenOffset() * Math.sin(heading));
-        fieldY = (getPollenDis() * Math.sin(heading)) + (getPollenOffset() * Math.cos(heading));
+
+        LLResult result = robot.limelight.getLatestResult();
+        if (result == null || !result.isValid()){return null;}
+
+        double tx = result.getTx();
+        double ty = result.getTy();
+
+        double heading = robot.pinpoint.getHeading(AngleUnit.RADIANS);
+        double targetAng = llangle + ty;
+        double robX = robot.pinpoint.getPosX(DistanceUnit.INCH);
+        double robY = robot.pinpoint.getPosY(DistanceUnit.INCH);
+        robPose = follower.getPose();
+
+
+        double dis = getPollenDis(targetAng);
+        double offset = getPollenOffset(tx, dis);
+
+        fieldX = (dis * Math.cos(heading)) - (offset * Math.sin(heading));
+        fieldY = (dis * Math.sin(heading)) + (offset * Math.cos(heading));
 
         pollenX = robX + fieldX;
         pollenY = robY + fieldY;
         return new Pose(pollenX, pollenY);
+
     }
 
+    public double getPollenDis(double targetAng){
+        return Math.tan(Math.toRadians(targetAng)) * targetHeight;
+    }
+    public double getPollenOffset(double tx, double dis){
+        return Math.tan(Math.toRadians(tx)) * dis;
+    }
     Supplier<Pose> pollenPoseSupplier = this::createPollenPose;
 
 
+   public PathChain pollenPath(){
+       return follower.pathBuilder()
+               .addPath(new BezierLine(follower.getPose(), pollenPoseSupplier.get()))
+               .build();
 
-//    follower.followPath(new Path(new BezierLine(
-//            new Point(follower.getPose()),
-//            new Point(pollenPoseSupplier.get())
-//            )));
+   }
+
+
+    Command followPollenPath = Command.build()
+            .setStart(() -> {
+                robot.limelight.start();
+            })
+            .setExecute(() ->{
+                Pose targetPollenPose = createPollenPose();
+                if(targetPollenPose != null){
+                    follower.followPath(pollenPath());
+                }
+            })
+            .setDone(() -> !follower.isBusy()
+            )
+            .setEnd(endCondition -> robot.limelight.stop()
+            );
+
 
 
     /** Todo - take distance and add to robPose for new coords and make path from one to other
