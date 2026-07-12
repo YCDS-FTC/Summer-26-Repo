@@ -50,16 +50,15 @@ public class Vcons {
         return new Pose(pollenX, pollenY);
     }
 
-    Supplier<Pose> pollenPoseSupplier = () -> new Pose(
-            robX + fieldX,
-            robY + fieldY,
-            0
-    );
+    Supplier<Pose> pollenPoseSupplier = this::createPollenPose;
 
-    follower.followPath(new Path(new BezierLine(
-            new Point(follower.getPose()),
-            new Point(pollenPoseSupplier.get())
-            )));
+
+
+//    follower.followPath(new Path(new BezierLine(
+//            new Point(follower.getPose()),
+//            new Point(pollenPoseSupplier.get())
+//            )));
+
 
     /** Todo - take distance and add to robPose for new coords and make path from one to other
      *  - after above is finished restructure into command that can be used in teleop withg variables in proper areas.**/
