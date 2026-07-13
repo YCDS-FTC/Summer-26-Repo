@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 
@@ -81,21 +83,27 @@ public class Vcons{
 
    }
 
+    public Command followPollenPath(){
+       return Command.build()
+               .setStart(() -> {
+            robot.limelight.start();
+        })
+                .setExecute(() ->{
+                    Pose targetPollenPose = createPollenPose();
+                    if(targetPollenPose != null){
+                        follower.followPath(pollenPath());
+                    }
+                })
+                .setDone(() -> !follower.isBusy()
+                )
+                .setEnd(endCondition -> robot.limelight.stop()
+                );
 
-    Command followPollenPath = Command.build()
-            .setStart(() -> {
-                robot.limelight.start();
-            })
-            .setExecute(() ->{
-                Pose targetPollenPose = createPollenPose();
-                if(targetPollenPose != null){
-                    follower.followPath(pollenPath());
-                }
-            })
-            .setDone(() -> !follower.isBusy()
-            )
-            .setEnd(endCondition -> robot.limelight.stop()
-            );
+    }
+
+    public Command scanThenMove(){
+       return sequential(waitMs(300), followPollenPath());
+    }
 
 
 
