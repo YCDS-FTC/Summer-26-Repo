@@ -9,6 +9,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.ivy.Command;
+import com.pedropathing.ivy.commands.Commands;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.limelightvision.LLResult;
 
@@ -23,6 +24,7 @@ import java.util.function.Supplier;
 public class Vcons{
     private hackingHoundsHardware robot;
     private Follower follower;
+    public boolean autoDrive = false;
 
     public Vcons(hackingHoundsHardware robot, Follower follower) {
         this.robot = robot;
@@ -48,12 +50,10 @@ public class Vcons{
         double tx = result.getTx();
         double ty = result.getTy();
 
-        double heading = robot.pinpoint.getHeading(AngleUnit.RADIANS);
+        double heading = follower.getHeading();
         double targetAng = llangle + ty;
-        double robX = robot.pinpoint.getPosX(DistanceUnit.INCH);
-        double robY = robot.pinpoint.getPosY(DistanceUnit.INCH);
-        robPose = follower.getPose();
-
+        double robX = follower.getPose().getX();
+        double robY = follower.getPose().getY();
 
         double dis = getPollenDis(targetAng);
         double offset = getPollenOffset(tx, dis);
@@ -63,7 +63,7 @@ public class Vcons{
 
         pollenX = robX + fieldX;
         pollenY = robY + fieldY;
-        return new Pose(pollenX, pollenY);
+        return new Pose(pollenX, pollenY, heading);
 
     }
 
@@ -79,14 +79,17 @@ public class Vcons{
    public PathChain pollenPath(){
        return follower.pathBuilder()
                .addPath(new BezierLine(follower.getPose(), pollenPoseSupplier.get()))
+               .setConstantHeadingInterpolation(pollenPoseSupplier.get().getHeading())
                .build();
 
    }
+
 
     public Command followPollenPath(){
        return Command.build()
                .setStart(() -> {
             robot.limelight.start();
+            autoDrive = true;
         })
                 .setExecute(() ->{
                     Pose targetPollenPose = createPollenPose();
@@ -96,13 +99,21 @@ public class Vcons{
                 })
                 .setDone(() -> !follower.isBusy()
                 )
-                .setEnd(endCondition -> robot.limelight.stop()
+                .setEnd(endCondition -> autoDrive = false
+
                 );
 
     }
 
+    private void turnLimelightOff(){
+       robot.limelight.stop();
+    }
+    public Command limelightOff(){
+       return Commands.instant(this::turnLimelightOff);
+    }
+
     public Command scanThenMove(){
-       return sequential(waitMs(300), followPollenPath());
+       return sequential(waitMs(300), followPollenPath(), limelightOff());
     }
 
 

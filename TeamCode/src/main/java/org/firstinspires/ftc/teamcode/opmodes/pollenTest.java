@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.vision.Vcons;
 
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
@@ -20,6 +21,7 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 public class pollenTest extends LinearOpMode {
 
+    boolean autoDrive = false;
     @Override
     public void runOpMode(){
         hackingHoundsHardware robot = new hackingHoundsHardware();
@@ -27,6 +29,7 @@ public class pollenTest extends LinearOpMode {
         follower = Constants.createFollower(hardwareMap);
 
        Vcons vcons = new Vcons(robot, follower);
+       Drivetrain drivetrain = new Drivetrain(robot, follower);
 
 
         Scheduler.reset();
@@ -36,11 +39,25 @@ public class pollenTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad1.a){
+            if(gamepad1.aWasPressed()){
                 schedule(vcons.scanThenMove());
+
+            }
+            if(gamepad1.b){
+                drivetrain.relocalizeRed();
+            }
+            if(gamepad1.xWasPressed()){
+                schedule(drivetrain.relocalizeBlue());
+            }
+
+            if(!vcons.autoDrive){
+                drivetrain.periodic();
             }
 
 
+
+            Scheduler.execute();
+            follower.update();
 
 
         }
