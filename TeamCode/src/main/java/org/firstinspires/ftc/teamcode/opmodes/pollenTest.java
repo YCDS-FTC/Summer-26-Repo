@@ -44,7 +44,7 @@ public class pollenTest extends LinearOpMode {
 
             }
             if(gamepad1.b){
-                drivetrain.relocalizeRed();
+                schedule(drivetrain.relocalizeRed());
             }
             if(gamepad1.xWasPressed()){
                 schedule(drivetrain.relocalizeBlue());

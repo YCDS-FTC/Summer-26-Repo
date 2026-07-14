@@ -29,11 +29,11 @@ public class Drivetrain {
         follower.setPose(bluePose);
     }
     public CommandBuilder relocalizeRed(){
-        return Commands.instant(this::blueRelocalize);
+        return Commands.instant(this::redRelocalize);
     }
 
     public CommandBuilder relocalizeBlue(){
-        return Commands.instant(this::redRelocalize);
+        return Commands.instant(this::blueRelocalize);
     }
 
     public void periodic(){
