@@ -23,8 +23,8 @@ public class Teleeop extends OpMode {
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
     private TelemetryManager telemetryM;
-    private boolean slowMode = false;
-    private double slowModeMultiplier = 0.5;
+    private final double SHIFT = 0;
+    private boolean isRedAlliance;
 
     @Override
     public void init() {
@@ -56,27 +56,25 @@ public class Teleeop extends OpMode {
         follower.update();
         telemetryM.update();
 
-        if (!automatedDrive) {
-            //Make the last parameter false for field-centric
-            //In case the drivers want to use a "slowMode" you can scale the vectors
-
-            //This is the normal version to use in the TeleOp
-            if (!slowMode) follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x,
-                    true // Robot Centric
-            );
-
-                //This is how it looks with slowMode on
-            else follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y * slowModeMultiplier,
-                    -gamepad1.left_stick_x * slowModeMultiplier,
-                    -gamepad1.right_stick_x * slowModeMultiplier,
-                    true // Robot Centric
-            );
+        if (gamepad1.dpad_left || gamepad2.share){
+            isRedAlliance = false;
+        } else if (gamepad1.dpad_right || gamepad2.options) {
+            isRedAlliance = true;
         }
 
+
+        follower.setTeleOpDrive(
+                    -gamepad1.left_stick_y * SHIFT,
+                    -gamepad1.left_stick_x * SHIFT,
+                    -gamepad1.right_stick_x * SHIFT,
+                    false
+        );
+
+
+        if (gamepad1.options && isRedAlliance){
+            follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(180)));
+
+        }
         //Automated PathFollowing
         if (gamepad1.aWasPressed()) {
             follower.followPath(pathChain.get());
@@ -89,20 +87,6 @@ public class Teleeop extends OpMode {
             automatedDrive = false;
         }
 
-        //Slow Mode
-        if (gamepad1.rightBumperWasPressed()) {
-            slowMode = !slowMode;
-        }
-
-        //Optional way to change slow mode strength
-        if (gamepad1.xWasPressed()) {
-            slowModeMultiplier += 0.25;
-        }
-
-        //Optional way to change slow mode strength
-        if (gamepad2.yWasPressed()) {
-            slowModeMultiplier -= 0.25;
-        }
 
         telemetryM.debug("position", follower.getPose());
         telemetryM.debug("velocity", follower.getVelocity());
