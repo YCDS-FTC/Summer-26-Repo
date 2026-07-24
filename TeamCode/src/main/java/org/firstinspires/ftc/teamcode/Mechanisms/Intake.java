@@ -14,7 +14,7 @@ public class Intake {
     }
 
 
-    public Command setPower(double power) {
+    public Command runIntake(double power) {
         return Command.build()
                 .setExecute(() -> {
                     robot.intake.setPower(power);
