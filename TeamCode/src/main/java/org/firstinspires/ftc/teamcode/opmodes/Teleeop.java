@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -18,12 +19,13 @@ import java.util.function.Supplier;
 @Configurable
 @TeleOp
 public class Teleeop extends OpMode {
-    private Follower follower;
     public static Pose startingPose; //See ExampleAuto to understand how to use this
+    private final double SHIFT = 0;
+    private Follower follower;
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
     private TelemetryManager telemetryM;
-    private final double SHIFT = 0;
+    private double offsetHeading;
     private boolean isRedAlliance;
 
     @Override
@@ -56,40 +58,70 @@ public class Teleeop extends OpMode {
         follower.update();
         telemetryM.update();
 
-        if (gamepad1.dpad_left || gamepad2.share){
+
+        /*
+        Alliance selection, this is what the Gearhounds drive members are used too.
+        It makes sense because you press the left button to select the left goal and vice versa
+        */
+        if (gamepad1.dpad_left || gamepad2.share) {
             isRedAlliance = false;
         } else if (gamepad1.dpad_right || gamepad2.options) {
             isRedAlliance = true;
         }
 
-
+        /*
+        Drive code, this is what actually tells the robot to move, and we multiply the joystick values by the shift value.
+        The shift value is just a multiplier that would control the drivetrain speed. 1 being full speed and 0 being no speed
+        As far as I can tell the offsetHeading it how you recenter robot's "forward" when driving field-centric. Documentation is crappy
+         */
         follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y * SHIFT,
-                    -gamepad1.left_stick_x * SHIFT,
-                    -gamepad1.right_stick_x * SHIFT,
-                    false
+                -gamepad1.left_stick_y * SHIFT,
+                -gamepad1.left_stick_x * SHIFT,
+                -gamepad1.right_stick_x * SHIFT,
+                offsetHeading
         );
 
 
-        if (gamepad1.options && isRedAlliance){
+        /*
+        Offset heading / baby relocalize, this just takes the current robots position and just modifies the heading value base off of what alliance you are on
+        the offsetHeading is definitely needed, but the follower.setPose could be removed because it relies on the driver actually standing on the correct side
+         */
+        if (gamepad1.options && isRedAlliance) {
+            offsetHeading = follower.getPose().getHeading();
             follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(180)));
-
-        }
-        //Automated PathFollowing
-        if (gamepad1.aWasPressed()) {
-            follower.followPath(pathChain.get());
-            automatedDrive = true;
-        }
-
-        //Stop automated following if the follower is done
-        if (automatedDrive && (gamepad1.bWasPressed() || !follower.isBusy())) {
-            follower.startTeleopDrive();
-            automatedDrive = false;
+        } else if (gamepad1.options && !isRedAlliance) {
+            offsetHeading = follower.getPose().getHeading();
+            follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(0)));
         }
 
 
-        telemetryM.debug("position", follower.getPose());
-        telemetryM.debug("velocity", follower.getVelocity());
-        telemetryM.debug("automatedDrive", automatedDrive);
+        /*
+        I think it could be cool to look into some automated path-following stuff, I also saw that there was a command to hold position,
+        that could be useful for something like automatic park and park holding
+         */
+
+//        //Automated PathFollowing
+//        if (gamepad1.aWasPressed()) {
+//            follower.followPath(pathChain.get());
+//            automatedDrive = true;
+//        }
+//
+//        //Stop automated following if the follower is done
+//        if (automatedDrive && (gamepad1.bWasPressed() || !follower.isBusy())) {
+//            follower.startTeleopDrive();
+//            automatedDrive = false;
+//        }
+
+        /*
+        telemetry to read of the robots current position
+        also why is there literally no documentation for this telemetryManager doo-hicky
+         */
+
+        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)", follower.getPose().getX(), follower.getPose().getY()));
+        telemetry.addLine(String.format("Angle %6.1f (degrees)", Math.toDegrees(follower.getPose().getHeading())));
+
+//        telemetryM.debug("position", follower.getPose());
+//        telemetryM.debug("velocity", follower.getVelocity());
+//        telemetryM.debug("automatedDrive", automatedDrive);
     }
 }
