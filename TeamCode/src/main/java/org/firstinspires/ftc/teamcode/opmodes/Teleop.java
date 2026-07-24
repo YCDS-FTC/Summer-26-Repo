@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 @Configurable
 @TeleOp
-public class Teleeop extends OpMode {
+public class Teleop extends OpMode {
     public static Pose startingPose; //See ExampleAuto to understand how to use this
     private final double SHIFT = 0;
     private Follower follower;
