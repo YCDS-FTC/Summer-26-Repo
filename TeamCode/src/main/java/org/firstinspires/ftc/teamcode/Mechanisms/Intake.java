@@ -13,7 +13,9 @@ public class Intake {
         this.robot = robot;
     }
 
-
+    /**
+     * @param power Sets the intake power
+     */
     public Command runIntake(double power) {
         return Command.build()
                 .setExecute(() -> {
@@ -24,6 +26,9 @@ public class Intake {
     }
 
 
+    /**
+     * Stops the intake
+     */
     public Command stopIntake(){
         return Command.build()
                 .setExecute(() -> {
