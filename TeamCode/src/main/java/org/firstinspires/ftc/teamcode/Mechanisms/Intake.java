@@ -23,4 +23,12 @@ public class Intake {
 
     }
 
+
+    public Command stopIntake(){
+        return Command.build()
+                .setExecute(() -> {
+                    robot.intake.setPower(0);
+                });
+    }
+
 }
