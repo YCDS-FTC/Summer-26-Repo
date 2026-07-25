@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
+import static com.pedropathing.ivy.groups.Groups.parallel;
+
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 
@@ -20,14 +22,11 @@ public class Intake {
      * @param power Sets the intake power
      */
     public Command runIntake(double power) {
-        return Command.build()
+        return parallel(Command.build()
                 .setExecute(() -> {
                     robot.intake.setPower(power);
-                    Scheduler.schedule(led.setShooterColor(Led.Color.RED));
-                    Scheduler.execute();
-                });
-
-
+                    led.setShooterColor(Led.Color.RED);
+                }));
     }
 
 
