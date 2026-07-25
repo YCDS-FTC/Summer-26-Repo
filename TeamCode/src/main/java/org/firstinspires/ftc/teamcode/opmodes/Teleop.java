@@ -12,6 +12,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.function.Supplier;
@@ -27,6 +28,7 @@ public class Teleop extends OpMode {
     private TelemetryManager telemetryM;
     private double offsetHeading;
     private boolean isRedAlliance;
+    private final hackingHoundsHardware robot = new hackingHoundsHardware();
 
     @Override
     public void init() {
