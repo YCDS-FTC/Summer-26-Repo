@@ -13,6 +13,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Led;
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -32,6 +33,7 @@ public class Teleop extends OpMode {
     private boolean isRedAlliance;
     private final hackingHoundsHardware robot = new hackingHoundsHardware();
     private final Led led = new Led(robot);
+    private final Intake intake = new Intake(robot);
 
 
     @Override
@@ -102,6 +104,12 @@ public class Teleop extends OpMode {
         } else if (gamepad1.options && !isRedAlliance) {
             offsetHeading = follower.getPose().getHeading();
             follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(0)));
+        }
+
+        if (gamepad1.right_trigger > 0.1){
+            Scheduler.schedule(intake.runIntake(1));
+        } else if (gamepad1.right_trigger < 0.1 && robot.intake.getPower() == 1) {
+            Scheduler.schedule(intake.stopIntake());
         }
 
 
