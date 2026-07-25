@@ -6,6 +6,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
@@ -59,7 +60,7 @@ public class Teleop extends OpMode {
         //Call this once per loop
         follower.update();
         telemetryM.update();
-
+        Scheduler.execute();
 
         /*
         Alliance selection, this is what the Gearhounds drive members are used too.
