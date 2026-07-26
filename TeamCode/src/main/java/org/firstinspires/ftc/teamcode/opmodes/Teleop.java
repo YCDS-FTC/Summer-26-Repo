@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 @TeleOp
 public class Teleop extends OpMode {
     public static Pose startingPose; //See ExampleAuto to understand how to use this
-    private final double SHIFT = 0;
+    private double SHIFT = 0;
     private Follower follower;
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
@@ -87,6 +87,12 @@ public class Teleop extends OpMode {
         The shift value is just a multiplier that would control the drivetrain speed. 1 being full speed and 0 being no speed
         As far as I can tell the offsetHeading it how you recenter robot's "forward" when driving field-centric. Documentation is crappy
          */
+
+        if(gamepad1.right_stick_button){
+            SHIFT = 0.5;
+        }if(gamepad1.left_stick_button){
+            SHIFT = 1;
+        }
         follower.setTeleOpDrive(
                 -gamepad1.left_stick_y * SHIFT,
                 -gamepad1.left_stick_x * SHIFT,
