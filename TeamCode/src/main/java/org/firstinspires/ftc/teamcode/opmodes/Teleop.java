@@ -150,6 +150,7 @@ public class Teleop extends OpMode {
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)", follower.getPose().getX(), follower.getPose().getY()));
         telemetry.addLine(String.format("Angle %6.1f (degrees)", Math.toDegrees(follower.getPose().getHeading())));
+        telemetry.addData("intake power", robot.intake.getPower());
 
 //        telemetryM.debug("position", follower.getPose());
 //        telemetryM.debug("velocity", follower.getVelocity());
