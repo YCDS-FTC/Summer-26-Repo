@@ -18,6 +18,9 @@ public class Gate {
         this.robot = robot;
     }
 
+    /**
+     * Opens the gate and closes it after a set duration (gateDurationMs)
+     */
     public Command cycleGate(){
         ElapsedTime timer = null;
         return Command.build()
@@ -28,6 +31,9 @@ public class Gate {
                 });
     }
 
+    /**
+     * Opens the gate
+     */
     public Command openGate(){
         return Command.build()
                 .setExecute(() -> {
@@ -35,6 +41,9 @@ public class Gate {
                 });
     }
 
+    /**
+     * Closes the gate
+     */
     public Command closeGate(){
         return Command.build()
                 .setExecute(() -> {

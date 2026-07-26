@@ -19,6 +19,9 @@ public class Hood {
 
     }
 
+    /**
+     * @param distanceToGoal input the distance from the robot to the goal and the hood wil go to the correct angle
+     */
     public Command setHoodAngle(double distanceToGoal){
         return Command.build()
                 .setExecute(() -> {
