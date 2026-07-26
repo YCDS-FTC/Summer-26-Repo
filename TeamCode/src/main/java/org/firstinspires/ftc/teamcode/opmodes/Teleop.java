@@ -113,10 +113,12 @@ public class Teleop extends OpMode {
             follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(0)));
         }
 
-        if (gamepad1.right_trigger > 0.1){
+        if(gamepad2.a){
             Scheduler.schedule(intake.runIntake(1));
-        } else if (gamepad1.right_trigger < 0.1 && robot.intake.getPower() == 1) {
+        } else if (gamepad2.y) {
             Scheduler.schedule(intake.stopIntake());
+        } else if (gamepad2.x) {
+            Scheduler.schedule(intake.runIntake(-1));
         }
 
         if (gamepad1.right_bumper){
