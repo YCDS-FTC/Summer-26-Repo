@@ -13,6 +13,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Gate;
 import org.firstinspires.ftc.teamcode.Mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.Mechanisms.Led;
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
@@ -34,7 +35,7 @@ public class Teleop extends OpMode {
     private final hackingHoundsHardware robot = new hackingHoundsHardware();
     private final Led led = new Led(robot);
     private final Intake intake = new Intake(robot);
-
+    private final Gate gate = new Gate(robot);
 
     @Override
     public void init() {
@@ -110,6 +111,10 @@ public class Teleop extends OpMode {
             Scheduler.schedule(intake.runIntake(1));
         } else if (gamepad1.right_trigger < 0.1 && robot.intake.getPower() == 1) {
             Scheduler.schedule(intake.stopIntake());
+        }
+
+        if (gamepad1.right_bumper){
+            Scheduler.schedule(gate.cycleGate());
         }
 
 
