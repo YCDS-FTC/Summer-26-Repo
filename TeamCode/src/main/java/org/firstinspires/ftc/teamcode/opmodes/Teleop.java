@@ -6,12 +6,17 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Mechanisms.Gate;
+import org.firstinspires.ftc.teamcode.Mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.Mechanisms.Led;
+import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.function.Supplier;
@@ -20,13 +25,17 @@ import java.util.function.Supplier;
 @TeleOp
 public class Teleop extends OpMode {
     public static Pose startingPose; //See ExampleAuto to understand how to use this
-    private final double SHIFT = 0;
+    private double SHIFT = 0;
     private Follower follower;
     private boolean automatedDrive;
     private Supplier<PathChain> pathChain;
     private TelemetryManager telemetryM;
     private double offsetHeading;
     private boolean isRedAlliance;
+    private final hackingHoundsHardware robot = new hackingHoundsHardware();
+    private final Led led = new Led(robot);
+    private final Intake intake = new Intake(robot);
+    private final Gate gate = new Gate(robot);
 
     @Override
     public void init() {
@@ -49,7 +58,7 @@ public class Teleop extends OpMode {
         //The parameter controls whether the Follower should use break mode on the motors (using it is recommended).
         //In order to use float mode, add .useBrakeModeInTeleOp(true); to your Drivetrain Constants in Constant.java (for Mecanum)
         //If you don't pass anything in, it uses the default (false)
-        follower.startTeleopDrive();
+        follower.startTeleopDrive(true);
     }
 
     @Override
@@ -57,7 +66,7 @@ public class Teleop extends OpMode {
         //Call this once per loop
         follower.update();
         telemetryM.update();
-
+        Scheduler.execute();
 
         /*
         Alliance selection, this is what the Gearhounds drive members are used too.
@@ -65,8 +74,12 @@ public class Teleop extends OpMode {
         */
         if (gamepad1.dpad_left || gamepad2.share) {
             isRedAlliance = false;
+            Scheduler.schedule(led.setShooterColor(Led.Color.BLUE));
+            Scheduler.schedule(led.setIntakeColor(Led.Color.BLUE));
         } else if (gamepad1.dpad_right || gamepad2.options) {
             isRedAlliance = true;
+            Scheduler.schedule(led.setShooterColor(Led.Color.RED));
+            Scheduler.schedule(led.setIntakeColor(Led.Color.RED));
         }
 
         /*
@@ -74,6 +87,12 @@ public class Teleop extends OpMode {
         The shift value is just a multiplier that would control the drivetrain speed. 1 being full speed and 0 being no speed
         As far as I can tell the offsetHeading it how you recenter robot's "forward" when driving field-centric. Documentation is crappy
          */
+
+        if(gamepad1.right_stick_button){
+            SHIFT = 0.5;
+        }if(gamepad1.left_stick_button){
+            SHIFT = 1;
+        }
         follower.setTeleOpDrive(
                 -gamepad1.left_stick_y * SHIFT,
                 -gamepad1.left_stick_x * SHIFT,
@@ -92,6 +111,18 @@ public class Teleop extends OpMode {
         } else if (gamepad1.options && !isRedAlliance) {
             offsetHeading = follower.getPose().getHeading();
             follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(0)));
+        }
+
+        if(gamepad2.a){
+            Scheduler.schedule(intake.runIntake(1));
+        } else if (gamepad2.y) {
+            Scheduler.schedule(intake.stopIntake());
+        } else if (gamepad2.x) {
+            Scheduler.schedule(intake.runIntake(-1));
+        }
+
+        if (gamepad1.right_bumper){
+            Scheduler.schedule(gate.cycleGate());
         }
 
 
@@ -119,6 +150,7 @@ public class Teleop extends OpMode {
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)", follower.getPose().getX(), follower.getPose().getY()));
         telemetry.addLine(String.format("Angle %6.1f (degrees)", Math.toDegrees(follower.getPose().getHeading())));
+        telemetry.addData("intake power", robot.intake.getPower());
 
 //        telemetryM.debug("position", follower.getPose());
 //        telemetryM.debug("velocity", follower.getVelocity());
