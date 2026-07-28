@@ -21,8 +21,6 @@ public class Intake {
                 .setExecute(() -> {
                     robot.intake.setPower(power);
                 });
-
-
     }
 
 
