@@ -23,17 +23,11 @@ public class Turret {
 
 
 
-    public void periodic(){
-        if (use_LL){
+    public Command
 
-        } else if(no_LL){
-
-        } else if(manual){
-
-        }
-    }
     /**take all methods from previous repo and put into here. ALl act turretmath goes into single method with everything split into methods. Only thing which
-    goes into periodic is method for setting turret power. Change between yesLL and noLL using llresult, seperateCommand thats runs infinitely for switching between states**/
+     goes into periodic is method for setting turret power. Change between yesLL and noLL using llresult, seperateCommand thats runs infinitely for switching between states**/
+
 
 
     public Command exampleCommand(double value) {
