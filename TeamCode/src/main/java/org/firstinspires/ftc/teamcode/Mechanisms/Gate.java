@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 import static com.pedropathing.ivy.commands.Commands.waitMs;
-import static org.firstinspires.ftc.teamcode.RobotConstants.gateClose;
-import static org.firstinspires.ftc.teamcode.RobotConstants.gateDurationMs;
-import static org.firstinspires.ftc.teamcode.RobotConstants.gateOpen;
+import static org.firstinspires.ftc.teamcode.util.RobotConstants.gateClose;
+import static org.firstinspires.ftc.teamcode.util.RobotConstants.gateDurationMs;
+import static org.firstinspires.ftc.teamcode.util.RobotConstants.gateOpen;
 
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.util.ElapsedTime;

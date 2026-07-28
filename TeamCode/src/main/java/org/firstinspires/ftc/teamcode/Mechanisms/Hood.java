@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
-import static org.firstinspires.ftc.teamcode.LookUpTables.hoodAngleLut;
+import static org.firstinspires.ftc.teamcode.util.LookUpTables.hoodAngleLut;
 
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 
