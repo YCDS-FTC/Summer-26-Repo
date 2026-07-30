@@ -35,7 +35,7 @@ public class Vcons{
     double pollenX;
     double pollenY;
     /** the follwing are just example values to demonstrate how the math would work **/
-    double llheight = 8;
+    double llheight = 13;
     double polheight = 1.45;
 
     Pose robPose;
@@ -83,20 +83,29 @@ public class Vcons{
                .build();
 
    }
+   public PathChain pollenPathRevised(){
+       Pose target = createPollenPose();
+       if(target == null){
+           return null;
+       }
+       return follower.pathBuilder()
+               .addPath(new BezierLine(follower.getPose(), target))
+               .setConstantHeadingInterpolation(target.getHeading())
+               .build();
+   }
 
 
     public Command followPollenPath(){
        return Command.build()
                .setStart(() -> {
             robot.limelight.start();
+            robot.limelight.pipelineSwitch(4);
             autoDrive = true;
+            PathChain path = pollenPathRevised();
+            if (path != null){
+                follower.followPath(path);
+            }
         })
-                .setExecute(() ->{
-                    Pose targetPollenPose = createPollenPose();
-                    if(targetPollenPose != null){
-                        follower.followPath(pollenPath());
-                    }
-                })
                 .setDone(() -> !follower.isBusy()
                 )
                 .setEnd(endCondition -> autoDrive = false
@@ -116,8 +125,4 @@ public class Vcons{
        return sequential(waitMs(300), followPollenPath(), limelightOff());
     }
 
-
-
-    /** Todo - take distance and add to robPose for new coords and make path from one to other
-     *  - after above is finished restructure into command that can be used in teleop withg variables in proper areas.**/
 }

@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 import static com.pedropathing.ivy.Scheduler.schedule;
 
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.ivy.Scheduler;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -28,10 +30,9 @@ public class pollenTest extends LinearOpMode {
 
 
         Scheduler.reset();
-
-
-
         waitForStart();
+        follower.startTeleopDrive(true);
+
 
 
         while(opModeIsActive()){
@@ -43,10 +44,10 @@ public class pollenTest extends LinearOpMode {
 
             }
             if(gamepad1.b){
-                schedule(drivetrain.relocalizeRed());
+                schedule(drivetrain.relocalizeRed);
             }
             if(gamepad1.xWasPressed()){
-                schedule(drivetrain.relocalizeBlue());
+                schedule(drivetrain.relocalizeBlue);
             }
 
             if(!vcons.autoDrive){
@@ -56,6 +57,32 @@ public class pollenTest extends LinearOpMode {
 
 
 
+            // --- Telemetry ---
+            telemetry.addData("autoDrive", vcons.autoDrive);
+            telemetry.addData("follower busy", follower.isBusy());
+
+            LLResult result = robot.limelight.getLatestResult();
+            if (result != null && result.isValid()) {
+                telemetry.addData("LL valid", true);
+                telemetry.addData("tx", result.getTx());
+                telemetry.addData("ty", result.getTy());
+            } else {
+                telemetry.addData("LL valid", false);
+            }
+
+            Pose pollenPose = vcons.createPollenPose();
+            if (pollenPose != null) {
+                telemetry.addData("pollen X", pollenPose.getX());
+                telemetry.addData("pollen Y", pollenPose.getY());
+                telemetry.addData("pollen heading", Math.toDegrees(pollenPose.getHeading()));
+            } else {
+                telemetry.addLine("pollen pose: null");
+            }
+
+            telemetry.addData("robot X", follower.getPose().getX());
+            telemetry.addData("robot Y", follower.getPose().getY());
+            telemetry.addData("robot heading", Math.toDegrees(follower.getHeading()));
+            telemetry.update();
 
         }
 
