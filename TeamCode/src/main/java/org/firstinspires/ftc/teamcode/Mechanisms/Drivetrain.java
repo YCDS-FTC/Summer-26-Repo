@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
 
+import static com.pedropathing.ivy.commands.Commands.infinite;
+import static com.pedropathing.ivy.commands.Commands.instant;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.CommandBuilder;
 import com.pedropathing.ivy.commands.Commands;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 
@@ -14,6 +18,9 @@ public class Drivetrain {
     private Follower follower;
     private hackingHoundsHardware robot;
     private Gamepad gamepad1;
+    public double offsetHeading =0;
+    public double shift = 1;
+
 
     private Pose redPose = new Pose(9, 7.65625, Math.toRadians(0));
     private Pose bluePose = new Pose(135, 7.65625, Math.toRadians(180));
@@ -25,22 +32,24 @@ public class Drivetrain {
     }
 
 
-    private void redRelocalize(){
-        follower.setPose(redPose);;
-    }
     private void blueRelocalize(){
         follower.setPose(bluePose);
     }
-    public CommandBuilder relocalizeRed(){
-        return Commands.instant(this::redRelocalize);
+    private void redRelocalize(){
+        follower.setPose(redPose);
     }
 
-    public CommandBuilder relocalizeBlue(){
-        return Commands.instant(this::blueRelocalize);
-    }
+
+    public Command relocalizeBlue = instant(() ->{
+         offsetHeading =  follower.getHeading();
+         blueRelocalize();
+    });
+    public Command relocalizeRed = instant(() ->{
+        offsetHeading = follower.getHeading();
+        redRelocalize();
+    });
 
     public void periodic(){
-        follower.startTeleopDrive(true);
-        follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, false);
+        follower.setTeleOpDrive(-gamepad1.left_stick_y * shift, -gamepad1.left_stick_x * shift, gamepad1.right_stick_x * shift, offsetHeading);
     }
 }
