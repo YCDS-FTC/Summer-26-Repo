@@ -89,6 +89,7 @@ public class Vcons{
        return Command.build()
                .setStart(() -> {
             robot.limelight.start();
+            robot.limelight.pipelineSwitch(4);
             autoDrive = true;
         })
                 .setExecute(() ->{

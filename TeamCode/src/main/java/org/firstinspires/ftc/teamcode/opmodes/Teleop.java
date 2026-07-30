@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import static com.pedropathing.ivy.Scheduler.schedule;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -51,6 +53,7 @@ public class Teleop extends OpMode {
         //Lazy curve generation might look a little different to how we usually make paths,
         //This is because we are using a Lambda expression instead of calling follower.pathbuilder()
         //To use this though, we declare this as a Supplier<PathChain>. And we to call the path chain we instead do pathChain.get()
+        robot.init(hardwareMap);
     }
 
     @Override
@@ -74,12 +77,12 @@ public class Teleop extends OpMode {
         */
         if (gamepad1.dpad_left || gamepad2.share) {
             isRedAlliance = false;
-            Scheduler.schedule(led.setShooterColor(Led.Color.BLUE));
-            Scheduler.schedule(led.setIntakeColor(Led.Color.BLUE));
+            schedule(led.setShooterColor(Led.Color.BLUE));
+            schedule(led.setIntakeColor(Led.Color.BLUE));
         } else if (gamepad1.dpad_right || gamepad2.options) {
             isRedAlliance = true;
-            Scheduler.schedule(led.setShooterColor(Led.Color.RED));
-            Scheduler.schedule(led.setIntakeColor(Led.Color.RED));
+            schedule(led.setShooterColor(Led.Color.RED));
+            schedule(led.setIntakeColor(Led.Color.RED));
         }
 
         /*
@@ -93,6 +96,7 @@ public class Teleop extends OpMode {
         }if(gamepad1.left_stick_button){
             SHIFT = 1;
         }
+
         follower.setTeleOpDrive(
                 -gamepad1.left_stick_y * SHIFT,
                 -gamepad1.left_stick_x * SHIFT,
@@ -114,15 +118,15 @@ public class Teleop extends OpMode {
         }
 
         if(gamepad2.a){
-            Scheduler.schedule(intake.runIntake(1));
+            schedule(intake.runIntake(1));
         } else if (gamepad2.y) {
-            Scheduler.schedule(intake.stopIntake());
+            schedule(intake.stopIntake());
         } else if (gamepad2.x) {
-            Scheduler.schedule(intake.runIntake(-1));
+            schedule(intake.runIntake(-1));
         }
 
         if (gamepad1.right_bumper){
-            Scheduler.schedule(gate.cycleGate());
+            schedule(gate.cycleGate());
         }
 
 

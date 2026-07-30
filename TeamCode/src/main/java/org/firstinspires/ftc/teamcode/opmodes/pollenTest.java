@@ -24,7 +24,7 @@ public class pollenTest extends LinearOpMode {
         follower = Constants.createFollower(hardwareMap);
 
        Vcons vcons = new Vcons(robot, follower);
-       Drivetrain drivetrain = new Drivetrain(robot, follower);
+       Drivetrain drivetrain = new Drivetrain(robot, follower, gamepad1);
 
 
         Scheduler.reset();
@@ -34,6 +34,9 @@ public class pollenTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
+            Scheduler.execute();
+            follower.update();
+
             if(gamepad1.aWasPressed()){
                 schedule(vcons.scanThenMove());
 
@@ -51,8 +54,7 @@ public class pollenTest extends LinearOpMode {
 
 
 
-            Scheduler.execute();
-            follower.update();
+
 
 
         }

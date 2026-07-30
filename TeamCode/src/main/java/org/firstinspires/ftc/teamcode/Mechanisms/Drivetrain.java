@@ -1,24 +1,27 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.ivy.CommandBuilder;
 import com.pedropathing.ivy.commands.Commands;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 
 public class Drivetrain {
     private Follower follower;
     private hackingHoundsHardware robot;
+    private Gamepad gamepad1;
 
     private Pose redPose = new Pose(9, 7.65625, Math.toRadians(0));
     private Pose bluePose = new Pose(135, 7.65625, Math.toRadians(180));
 
-    public Drivetrain(hackingHoundsHardware robot, Follower follower){
+    public Drivetrain(hackingHoundsHardware robot, Follower follower, Gamepad gamepad1){
         this.robot = robot;
         this.follower = follower;
+        this.gamepad1 = gamepad1;
     }
 
 
