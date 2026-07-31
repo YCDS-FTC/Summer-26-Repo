@@ -37,6 +37,8 @@ public class Vcons{
     /** the follwing are just example values to demonstrate how the math would work **/
     double llheight = 13;
     double polheight = 1.45;
+    double camOffsetForward = 8.5;
+    double camOffsetLeft = 0;
 
     Pose robPose;
     double llangle = 25;
@@ -44,11 +46,16 @@ public class Vcons{
 
     public Pose createPollenPose(){
 
-        LLResult result = robot.limelight.getLatestResult();
-        if (result == null || !result.isValid()){return null;}
 
-        double tx = result.getTx();
-        double ty = result.getTy();
+        LLResult result = robot.limelight.getLatestResult();
+
+        double[] python = result.getPythonOutput();
+
+
+
+        double tx = python[0];
+        double ty = python[1];
+        double area = python[2];
 
         double heading = follower.getHeading();
         double targetAng = llangle + ty;
@@ -56,19 +63,23 @@ public class Vcons{
         double robY = follower.getPose().getY();
 
         double dis = getPollenDis(targetAng);
-        double offset = getPollenOffset(tx, dis);
+        double offset = getPollenOffset(-tx, dis);
 
         fieldX = (dis * Math.cos(heading)) - (offset * Math.sin(heading));
         fieldY = (dis * Math.sin(heading)) + (offset * Math.cos(heading));
 
-        pollenX = robX + fieldX;
-        pollenY = robY + fieldY;
+        double camFieldX = (camOffsetForward * Math.cos(heading)) - (camOffsetLeft * Math.sin(heading));
+        double camFieldY = (camOffsetForward * Math.sin(heading)) + (camOffsetLeft * Math.cos(heading));
+
+
+        pollenX = robX + fieldX + camFieldX;
+        pollenY = robY + fieldY + camFieldY;
         return new Pose(pollenX, pollenY, heading);
 
     }
 
     public double getPollenDis(double targetAng){
-        return Math.tan(Math.toRadians(targetAng)) * targetHeight;
+        return targetHeight/  Math.tan(Math.toRadians(targetAng));
     }
     public double getPollenOffset(double tx, double dis){
         return Math.tan(Math.toRadians(tx)) * dis;
@@ -98,8 +109,6 @@ public class Vcons{
     public Command followPollenPath(){
        return Command.build()
                .setStart(() -> {
-            robot.limelight.start();
-            robot.limelight.pipelineSwitch(4);
             autoDrive = true;
             PathChain path = pollenPathRevised();
             if (path != null){
@@ -108,7 +117,9 @@ public class Vcons{
         })
                 .setDone(() -> !follower.isBusy()
                 )
-                .setEnd(endCondition -> autoDrive = false
+                .setEnd(endCondition -> {autoDrive = false;
+                follower.startTeleopDrive(true);
+                    }
 
                 );
 
@@ -122,7 +133,7 @@ public class Vcons{
     }
 
     public Command scanThenMove(){
-       return sequential(waitMs(300), followPollenPath(), limelightOff());
+       return sequential(waitMs(300), followPollenPath());
     }
 
 }

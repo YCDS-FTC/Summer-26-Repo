@@ -32,8 +32,9 @@ public class pollenTest extends LinearOpMode {
         Scheduler.reset();
         waitForStart();
         follower.startTeleopDrive(true);
-
-
+        robot.limelight.start();
+        robot.limelight.setPollRateHz(100);
+        robot.limelight.pipelineSwitch(4);
         while(opModeIsActive()){
             Scheduler.execute();
             follower.update();
@@ -42,7 +43,7 @@ public class pollenTest extends LinearOpMode {
                 schedule(vcons.scanThenMove());
 
             }
-            if(gamepad1.b){
+            if(gamepad1.bWasPressed()){
                 schedule(drivetrain.relocalizeRed);
             }
             if(gamepad1.xWasPressed()){
@@ -61,6 +62,13 @@ public class pollenTest extends LinearOpMode {
             telemetry.addData("follower busy", follower.isBusy());
 
             LLResult result = robot.limelight.getLatestResult();
+            double[] python = result.getPythonOutput();
+
+
+            double tx = python[0];
+            double ty = python[1];
+            telemetry.addData("tx", tx);
+            telemetry.addData("ty", ty);
             if (result != null && result.isValid()) {
                 telemetry.addData("LL valid", true);
                 telemetry.addData("tx", result.getTx());
@@ -77,7 +85,7 @@ public class pollenTest extends LinearOpMode {
             } else {
                 telemetry.addLine("pollen pose: null");
             }
-
+            telemetry.addData("limelight null?", robot.limelight == null);
             telemetry.addData("robot X", follower.getPose().getX());
             telemetry.addData("robot Y", follower.getPose().getY());
             telemetry.addData("robot heading", Math.toDegrees(follower.getHeading()));

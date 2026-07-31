@@ -100,7 +100,7 @@ public class Teleop extends OpMode {
         follower.setTeleOpDrive(
                 -gamepad1.left_stick_y * SHIFT,
                 -gamepad1.left_stick_x * SHIFT,
-                -gamepad1.right_stick_x * SHIFT,
+                gamepad1.right_stick_x * SHIFT,
                 offsetHeading
         );
 
