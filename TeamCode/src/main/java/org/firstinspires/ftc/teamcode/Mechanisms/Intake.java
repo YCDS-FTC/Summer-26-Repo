@@ -26,7 +26,9 @@ public class Intake {
                 .setExecute(() -> {
                     robot.intake.setPower(power);
                     led.setShooterColor(Led.Color.RED);
-                }));
+                })
+                .setDone(() -> true)
+                );
     }
 
 
@@ -37,7 +39,9 @@ public class Intake {
         return Command.build()
                 .setExecute(() -> {
                     robot.intake.setPower(0);
-                });
+                })
+                .setDone(() -> true
+                );
     }
 
 }
