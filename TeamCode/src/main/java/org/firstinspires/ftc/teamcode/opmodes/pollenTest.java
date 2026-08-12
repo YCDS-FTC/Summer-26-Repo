@@ -69,6 +69,8 @@ public class pollenTest extends LinearOpMode {
             double ty = python[1];
             telemetry.addData("tx", tx);
             telemetry.addData("ty", ty);
+            telemetry.addData("pollendDis", vcons.dis);
+            telemetry.addData("pollenOffset", vcons.offset);
             if (result != null && result.isValid()) {
                 telemetry.addData("LL valid", true);
                 telemetry.addData("tx", result.getTx());

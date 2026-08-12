@@ -25,6 +25,8 @@ public class Vcons{
     private hackingHoundsHardware robot;
     private Follower follower;
     public boolean autoDrive = false;
+    public double dis;
+    public double offset;
 
     public Vcons(hackingHoundsHardware robot, Follower follower) {
         this.robot = robot;
@@ -62,8 +64,8 @@ public class Vcons{
         double robX = follower.getPose().getX();
         double robY = follower.getPose().getY();
 
-        double dis = getPollenDis(targetAng);
-        double offset = getPollenOffset(-tx, dis);
+        dis = getPollenDis(targetAng);
+        offset = getPollenOffset(-tx, dis);
 
         fieldX = (dis * Math.cos(heading)) - (offset * Math.sin(heading));
         fieldY = (dis * Math.sin(heading)) + (offset * Math.cos(heading));
