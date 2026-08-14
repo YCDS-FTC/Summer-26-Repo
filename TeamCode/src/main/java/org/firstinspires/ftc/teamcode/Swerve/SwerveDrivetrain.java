@@ -1,21 +1,21 @@
 package org.firstinspires.ftc.teamcode.Swerve;
 
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.LEFT_BACK_OFFSET_DEG;
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.LEFT_BACK_STEER_REVERSED;
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.LEFT_FRONT_OFFSET_DEG;
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.LEFT_FRONT_STEER_REVERSED;
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.RIGHT_BACK_OFFSET_DEG;
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.RIGHT_BACK_STEER_REVERSED;
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.RIGHT_FRONT_OFFSET_DEG;
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstant.RIGHT_FRONT_STEER_REVERSED;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.LEFT_BACK_OFFSET_DEG;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.LEFT_BACK_STEER_REVERSED;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.LEFT_FRONT_OFFSET_DEG;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.LEFT_FRONT_STEER_REVERSED;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.RIGHT_BACK_OFFSET_DEG;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.RIGHT_BACK_STEER_REVERSED;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.RIGHT_FRONT_OFFSET_DEG;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.RIGHT_FRONT_STEER_REVERSED;
 
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 
-public class SwerveDrivetain {
+public class SwerveDrivetrain {
 
     public final SwerveDrivePod leftFrontPod, rightFrontPod, leftBackPod, rightBackPod;
 
-    public SwerveDrivetain(hackingHoundsHardware robot) {
+    public SwerveDrivetrain(hackingHoundsHardware robot) {
         leftFrontPod = new SwerveDrivePod(
                 robot.leftFront,
                 robot.leftFrontSteer,
