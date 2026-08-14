@@ -75,4 +75,8 @@ public class SwerveDrivePod {
         double steerControllerOutput = steerController.calculate(currentAngle, targetAngle);
         steerServo.setPower(steerControllerOutput);
     }
+
+    public void setSpeed(double targetDrivePower){
+        driveMotor.setPower(targetDrivePower);
+    }
 }
