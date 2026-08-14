@@ -40,9 +40,19 @@ public class SwerveDrivePod {
 
     public void setPod(double targetAngle, double targetDrivePower){
 
+        double drivePower = targetDrivePower;
         double currentAngle = getAngle();
+        double delta = EncoderUtil.closestAngle(currentAngle, targetAngle);
 
-        double steerControllerOutput = steerController.calculate(currentAngle, targetAngle);
+//if the delta is more than 90 turn the clsoer angle while reversing the wheel? and maybe 90 isnt the right value here idk
+        if (Math.abs(delta) > 90.0) {
+            delta -= Math.signum(delta) * 180.0;
+            drivePower = -drivePower;
+        }
+
+        double angle = currentAngle + delta;
+
+        double steerControllerOutput = steerController.calculate(currentAngle, angle);
 
         //We could remove this if we properly configured them in hardware
         if (steerReversed) {
@@ -50,6 +60,6 @@ public class SwerveDrivePod {
         }
 
         steerServo.setPower(steerControllerOutput);
-        driveMotor.setPower(targetDrivePower);
+        driveMotor.setPower(drivePower);
     }
 }
