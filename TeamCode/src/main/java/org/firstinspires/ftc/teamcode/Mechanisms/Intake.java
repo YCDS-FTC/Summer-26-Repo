@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.Mechanisms;
 import static com.pedropathing.ivy.groups.Groups.parallel;
 
 import com.pedropathing.ivy.Command;
+import com.pedropathing.ivy.CommandBuilder;
 import com.pedropathing.ivy.Scheduler;
+import com.pedropathing.ivy.commands.Commands;
 
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 
@@ -21,23 +23,16 @@ public class Intake {
     /**
      * @param power Sets the intake power
      */
-    public Command runIntake(double power) {
-        return parallel(Command.build()
-                .setExecute(() -> {
-                    robot.intake.setPower(power);
-                    led.setShooterColor(Led.Color.RED);
-                }));
+    public Command runIntake(double power){
+        return Commands.instant(() -> robot.intake.setPower(power));
     }
-
 
     /**
      * Stops the intake
      */
-    public Command stopIntake(){
-        return Command.build()
-                .setExecute(() -> {
-                    robot.intake.setPower(0);
-                });
+    public CommandBuilder stopIntake(){
+        return Commands.instant(() -> robot.intake.setPower(0));
     }
+
 
 }

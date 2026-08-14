@@ -28,7 +28,8 @@ public class Gate {
                     robot.gate.setPosition(gateOpen);
                     waitMs(gateDurationMs);
                     robot.gate.setPosition(gateClose);
-                });
+                })
+                .setDone(() -> true);
     }
 
     /**
@@ -38,7 +39,8 @@ public class Gate {
         return Command.build()
                 .setExecute(() -> {
                    robot.gate.setPosition(gateOpen);
-                });
+                })
+                .setDone(() -> true);
     }
 
     /**
@@ -48,7 +50,8 @@ public class Gate {
         return Command.build()
                 .setExecute(() -> {
                    robot.gate.setPosition(gateClose);
-                });
+                })
+                .setDone(() -> true);
     }
 
 }

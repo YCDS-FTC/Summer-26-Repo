@@ -48,7 +48,8 @@ public class Led {
         return Command.build()
                 .setExecute(() -> {
                     robot.shooterLight.setPosition(color);
-                });
+                })
+                .setDone(() -> true);
     };
 
     /**
@@ -67,7 +68,8 @@ public class Led {
         return Command.build()
                 .setExecute(() -> {
                     robot.intakeLight.setPosition(color);
-                });
+                })
+                .setDone(() -> true);
 
     }
 
