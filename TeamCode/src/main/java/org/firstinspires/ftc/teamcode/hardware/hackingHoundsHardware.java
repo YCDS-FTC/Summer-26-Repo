@@ -6,6 +6,8 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.Rev9AxisImu;
 import com.qualcomm.hardware.rev.Rev9AxisImuOrientationOnRobot;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,26 +24,14 @@ import java.util.List;
 // Generic robot class
 public class hackingHoundsHardware extends hardware {
     public HardwareMap robotMap;
-    public Limelight3A limelight;
     public DcMotorEx  leftFront;
     public DcMotorEx rightFront;
     public DcMotorEx  leftBack;
     public DcMotorEx  rightBack;
-    public DcMotorEx intake;
-    public DcMotorEx shooterTop;
-    public DcMotorEx shooterBottom;
-    public DcMotorEx turret;
-    public Servo kickstand1;
-    public Servo kickstand2;
-    public Servo gate;
-    public Servo hood;
-    public Servo shooterLight;
-    public Servo intakeLight;
+    public CRServo leftFrontSteer, leftBackSteer, rightFrontSteer, rightBackSteer;
+    public AnalogInput leftFrontEncoder, leftBackEncoder, rightFrontEncoder, rightBackEncoder;
     public IMU imu;
     public GoBildaPinpointDriver pinpoint;
-    public RevColorSensorV3 color1, color2;
-    public DistanceSensor distance0;
-
 
     public double lastAngle;
     private double globalAngle;
@@ -59,37 +49,35 @@ public class hackingHoundsHardware extends hardware {
 
 //        pinpoint = robotMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
-        leftFront = initMotor("leftFront", DcMotor.Direction.REVERSE);
-        rightFront = initMotor("rightFront", DcMotor.Direction.FORWARD);
-        leftBack = initMotor("leftBack", DcMotor.Direction.REVERSE);
-        rightBack = initMotor("rightBack", DcMotor.Direction.FORWARD);
-        intake = initMotor("intake", DcMotorEx.Direction.FORWARD);
-        shooterTop = initMotor("shooterTop", DcMotorEx.Direction.REVERSE);
-        shooterBottom = initMotor("shooterBottom", DcMotorEx.Direction.FORWARD);
-        turret = robotMap.get(DcMotorEx.class, "turret");
-        turret.setDirection(DcMotorSimple.Direction.FORWARD);
-        turret.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftFront = robotMap.get(DcMotorEx.class,"leftFront");
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFrontSteer = robotMap.get(CRServo.class, "leftFrontSteer");
+        leftFrontEncoder = robotMap.get(AnalogInput.class, "leftFrontEncoder");
+
+        leftBack = robotMap.get(DcMotorEx.class,"leftBack");
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackSteer = robotMap.get(CRServo.class, "leftBackSteer");
+        leftBackEncoder = robotMap.get(AnalogInput.class, "leftBackEncoder");
+
+        rightFront = robotMap.get(DcMotorEx.class,"rightFront");
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontSteer = robotMap.get(CRServo.class, "rightFrontSteer");
+        rightFrontEncoder = robotMap.get(AnalogInput.class, "rightFrontEncoder");
+
+        rightBack = robotMap.get(DcMotorEx.class,"rightBack");
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackSteer = robotMap.get(CRServo.class, "rightBackTurn");
+        rightBackEncoder = robotMap.get(AnalogInput.class, "rightBackEncoder");
 
 
-
-
-        kickstand1 = robotMap.get(Servo.class, "kickstand1");
-        kickstand2 = robotMap.get(Servo.class, "kickstand2");
-        gate = robotMap.get(Servo.class,"gate");
-        hood = robotMap.get(Servo.class,"hood");
-
-        limelight = robotMap.get(Limelight3A.class, "limelight");
         pinpoint = robotMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
 
-        distance0 = robotMap.get(DistanceSensor.class,"distance0");
-        color1 = robotMap.get(RevColorSensorV3.class,"color1");
-        color1.setGain(8);
-        color2 = robotMap.get(RevColorSensorV3.class,"color2");
-        color2.setGain(8);
 
-        intakeLight = robotMap.get(Servo.class, "shooterLight");
-        shooterLight = robotMap.get(Servo.class,"light");
 
 //        Rev9AxisImuOrientationOnRobot.I2cPortFacingDirection usb = Rev9AxisImuOrientationOnRobot.I2cPortFacingDirection.LEFT;
 //        Rev9AxisImuOrientationOnRobot.LogoFacingDirection logo = Rev9AxisImuOrientationOnRobot.LogoFacingDirection.DOWN;
