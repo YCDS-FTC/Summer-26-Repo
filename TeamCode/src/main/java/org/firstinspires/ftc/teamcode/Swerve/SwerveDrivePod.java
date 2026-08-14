@@ -62,4 +62,17 @@ public class SwerveDrivePod {
         steerServo.setPower(steerControllerOutput);
         driveMotor.setPower(drivePower);
     }
+
+    /**
+     * This will go to the "absolute" position and will NOT go the shortest distance
+     * i.e. if you tell the pod to go to angle 0 it will all ways go to 0 not the angle that is -180 or equivalent by reversing the motor direction
+     * This should be used for mostly debugging and testing
+     * @param targetAngle What angle in degrees to turn the pod to
+     */
+    public void setDirection(double targetAngle){
+        double currentAngle = getAngle();
+
+        double steerControllerOutput = steerController.calculate(currentAngle, targetAngle);
+        steerServo.setPower(steerControllerOutput);
+    }
 }
