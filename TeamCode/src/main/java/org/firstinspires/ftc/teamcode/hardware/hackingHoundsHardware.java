@@ -70,7 +70,7 @@ public class hackingHoundsHardware extends hardware {
         rightBack = robotMap.get(DcMotorEx.class,"rightBack");
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackSteer = robotMap.get(CRServo.class, "rightBackTurn");
+        rightBackSteer = robotMap.get(CRServo.class, "rightBackSteer");
         rightBackEncoder = robotMap.get(AnalogInput.class, "rightBackEncoder");
 
 
