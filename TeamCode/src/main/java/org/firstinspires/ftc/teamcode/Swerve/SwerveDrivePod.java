@@ -20,10 +20,10 @@ public class SwerveDrivePod {
 
 
     public SwerveDrivePod(DcMotorEx driveMotor,
-                            CRServo steerServo,
-                            AnalogInput encoder,
-                            double offsetDeg,
-                            boolean steerReversed) {
+                          CRServo steerServo,
+                          AnalogInput encoder,
+                          double offsetDeg,
+                          boolean steerReversed) {
         this.driveMotor    = driveMotor;
         this.steerServo    = steerServo;
         this.encoder       = encoder;
@@ -39,6 +39,8 @@ public class SwerveDrivePod {
     }
 
     public void setPod(double targetAngle, double targetDrivePower){
+
+        steerController.setPID(TurnKp, TurnKi, TurnKd);
 
         double drivePower = targetDrivePower;
         double currentAngle = getAngle();
@@ -70,6 +72,7 @@ public class SwerveDrivePod {
      * @param targetAngle What angle in degrees to turn the pod to
      */
     public void setDirection(double targetAngle){
+        steerController.setPID(TurnKp, TurnKi, TurnKd);
         double currentAngle = getAngle();
 
         double steerControllerOutput = steerController.calculate(currentAngle, targetAngle);
