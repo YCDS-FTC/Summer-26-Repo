@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.Mechanisms;
 
+import static com.pedropathing.ivy.commands.Commands.instant;
 import static org.firstinspires.ftc.teamcode.util.LookUpTables.hoodAngleLut;
 
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 
 import com.pedropathing.ivy.Command;
-import com.seattlesolvers.solverslib.util.InterpLUT;
 
 public class Hood {
 
@@ -13,27 +13,23 @@ public class Hood {
 
     public static double hoodAngle;
 
-
-    public Hood (hackingHoundsHardware robot){
+    public Hood(hackingHoundsHardware robot) {
         this.robot = robot;
-
     }
 
     /**
-     * @param distanceToGoal input the distance from the robot to the goal and the hood wil go to the correct angle
+     * @param distanceToGoal input the distance from the robot to the goal and the hood will go to the correct angle
      */
-    public Command setHoodAngle(double distanceToGoal){
-        return Command.build()
-                .setExecute(() -> {
-                    if (distanceToGoal > 200){
-                        hoodAngle = 0;
-                    } else if (distanceToGoal < -70) {
-                        hoodAngle = 0;
-                    } else{
-                        hoodAngle = hoodAngleLut.get(distanceToGoal);
-                    }
-                    robot.hood.setPosition(hoodAngle);
-                });
+    public Command setHoodAngle(double distanceToGoal) {
+        return instant(() -> {
+            if (distanceToGoal > 200) {
+                hoodAngle = 0;
+            } else if (distanceToGoal < -70) {
+                hoodAngle = 0;
+            } else {
+                hoodAngle = hoodAngleLut.get(distanceToGoal);
+            }
+            robot.hood.setPosition(hoodAngle);
+        });
     }
-
 }
