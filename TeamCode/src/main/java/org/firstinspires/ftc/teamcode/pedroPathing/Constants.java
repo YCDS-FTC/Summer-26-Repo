@@ -5,14 +5,14 @@ import com.pedropathing.control.PredictiveBrakingCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
-import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.ftc.drivetrains.SwerveConstants;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Swerve.SwerveDrivetrain;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
@@ -24,19 +24,10 @@ public class Constants {
 
 
 
-    public static MecanumConstants driveConstants = new MecanumConstants()
+    public static SwerveConstants swerveConstants = new SwerveConstants()
             .maxPower(1)
-            .rightFrontMotorName("rightFront")
-            .rightRearMotorName("rightBack")
-            .leftRearMotorName("leftBack")
-            .leftFrontMotorName("leftFront")
-            .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .useBrakeModeInTeleOp(true)
-            .xVelocity(89.8505599855438)
-            .yVelocity(55.659223421352124);
+            .velocity(80)
+            .useBrakeModeInTeleOp(true);
 
 
 
@@ -52,10 +43,11 @@ public class Constants {
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
+        SwerveDrivetrain drivetrain = new SwerveDrivetrain(hardwareMap);
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
                 .pinpointLocalizer(localizerConstants)
-                .mecanumDrivetrain(driveConstants)
+                .swerveDrivetrain(swerveConstants, drivetrain.pods())
                 .build();
     }
 }
