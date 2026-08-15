@@ -28,14 +28,14 @@ public class SwerveDrivetrain {
                 robot.leftBackSteer,
                 robot.leftBackEncoder,
                 LEFT_BACK_OFFSET_DEG,
-                RIGHT_FRONT_STEER_REVERSED
+                LEFT_BACK_STEER_REVERSED
         );
         rightFrontPod = new SwerveDrivePod(
                 robot.rightFront,
                 robot.rightFrontSteer,
                 robot.rightFrontEncoder,
                 RIGHT_FRONT_OFFSET_DEG,
-                LEFT_BACK_STEER_REVERSED
+                RIGHT_FRONT_STEER_REVERSED
         );
 
         rightBackPod = new SwerveDrivePod(
