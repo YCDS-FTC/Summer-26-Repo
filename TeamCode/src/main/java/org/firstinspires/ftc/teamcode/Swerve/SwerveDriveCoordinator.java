@@ -1,91 +1,89 @@
 package org.firstinspires.ftc.teamcode.Swerve;
 
-import static org.firstinspires.ftc.teamcode.Swerve.EncoderUtil.closestAngle;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.STICK_DEADZONE;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.TRACK_LENGTH;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.TRACK_WIDTH;
 
+/**
+ * Axis convention (matches the corner-angle comments in SwerveConstants):
+ * x = forward(+)/backward(-), y = right(+)/left(-), angle = atan2(y, x) in degrees,
+ * so 0 deg is straight ahead and positive angles rotate clockwise viewed from above.
+ * turnPower follows the same handedness: positive turnPower spins the robot clockwise.
+ */
 public class SwerveDriveCoordinator {
-        SwerveDrivePod leftFrontWheel;
-        SwerveDrivePod leftBackWheel;
-        SwerveDrivePod rightFrontWheel;
-        SwerveDrivePod rightBackWheel;
+    private final SwerveDrivePod leftFrontWheel;
+    private final SwerveDrivePod leftBackWheel;
+    private final SwerveDrivePod rightFrontWheel;
+    private final SwerveDrivePod rightBackWheel;
 
-        public SwerveDriveCoordinator(SwerveDrivePod leftFrontWheel,
-                                      SwerveDrivePod leftBackWheel,
-                                      SwerveDrivePod rightFrontWheel,
-                                      SwerveDrivePod rightBackWheel) {
-            this.leftFrontWheel = leftFrontWheel;
-            this.leftBackWheel = leftBackWheel;
-            this.rightFrontWheel = rightFrontWheel;
-            this.rightBackWheel = rightBackWheel;
-        }
-
-    public void translate(double direction, double power) {
-        leftFrontWheel.setPod(direction, power);
-        leftBackWheel.setPod(direction,power);
-        rightFrontWheel.setPod(direction, power);
-        rightBackWheel.setPod(direction, power);
+    public SwerveDriveCoordinator(SwerveDrivePod leftFrontWheel,
+                                  SwerveDrivePod leftBackWheel,
+                                  SwerveDrivePod rightFrontWheel,
+                                  SwerveDrivePod rightBackWheel) {
+        this.leftFrontWheel = leftFrontWheel;
+        this.leftBackWheel = leftBackWheel;
+        this.rightFrontWheel = rightFrontWheel;
+        this.rightBackWheel = rightBackWheel;
     }
 
-    public void inplaceTurn(double power){
-        leftFrontWheel.setPod(135, power);
-        leftBackWheel.setPod(45,power);
-        rightFrontWheel.setPod(-45, power);
-        rightBackWheel.setPod(-135, power);
+    /**
+     * @param direction     desired translation heading in degrees (0 = forward, +90 = right), ignored if translatePower is ~0
+     * @param translatePower desired translation speed, -1..1 (only magnitude is used; sign folds into direction)
+     * @param turnPower     desired rotation rate, -1..1, positive = clockwise
+     */
+    public void setSwerveDrive(double direction, double translatePower, double turnPower) {
+        if (Math.abs(translatePower) < STICK_DEADZONE) translatePower = 0.0;
+        if (Math.abs(turnPower) < STICK_DEADZONE) turnPower = 0.0;
+
+        double directionRadians = Math.toRadians(direction);
+        double vectorX = translatePower * Math.cos(directionRadians); // forward component
+        double vectorY = translatePower * Math.sin(directionRadians); // right component
+
+        // half-extents, normalized by the corner radius so a full-speed twist alone
+        // drives every wheel at exactly the same speed translatePower would (both are -1..1)
+        double halfLength = TRACK_LENGTH / 2.0;
+        double halfWidth = TRACK_WIDTH / 2.0;
+        double cornerRadius = Math.hypot(halfLength, halfWidth);
+        double normalizedWheelX = halfLength / cornerRadius;
+        double normalizedWheelY = halfWidth / cornerRadius;
+
+        double[][] wheelVectors = {
+                wheelVector(+normalizedWheelX, -normalizedWheelY, vectorX, vectorY, turnPower), // left front
+                wheelVector(-normalizedWheelX, -normalizedWheelY, vectorX, vectorY, turnPower), // left back
+                wheelVector(+normalizedWheelX, +normalizedWheelY, vectorX, vectorY, turnPower), // right front
+                wheelVector(-normalizedWheelX, +normalizedWheelY, vectorX, vectorY, turnPower), // right back
+        };
+
+        // scale all four wheels down together (not independently) so a combined
+        // translate+turn command that would exceed 1.0 keeps its commanded ratio/direction
+        double maxSpeed = 1.0;
+        for (double[] wv : wheelVectors) {
+            maxSpeed = Math.max(maxSpeed, Math.hypot(wv[0], wv[1]));
+        }
+        double scale = 1.0 / maxSpeed;
+
+        SwerveDrivePod[] pods = {leftFrontWheel, leftBackWheel, rightFrontWheel, rightBackWheel};
+        for (int i = 0; i < pods.length; i++) {
+            driveWheel(pods[i], wheelVectors[i][0] * scale, wheelVectors[i][1] * scale);
+        }
     }
 
-    public void translateTurn(double direction, double power, double turnPower)
-    {
-        double turnAngle = turnPower * 45.0;
-
-        // if the left front wheel is in the front
-        if (closestAngle(direction, 135.0) >= 90.0)
-        {
-            leftFrontWheel.setPod((direction + turnAngle), power);
-        }
-        // if it's in the back
-        else
-        {
-            leftFrontWheel.setPod((direction - turnAngle), power);
-        }
-        // if the left back wheel is in the front
-        if (closestAngle(direction, 225.0) > 90.0)
-        {
-            leftBackWheel.setPod((direction + turnAngle), power);
-        }
-        // if it's in the back
-        else
-        {
-            leftBackWheel.setPod((direction - turnAngle), power);
-        }
-        // if the right front wheel is in the front
-        if (closestAngle(direction, 45.0) > 90.0)
-        {
-            rightFrontWheel.setPod((direction + turnAngle), power);
-        }
-        // if it's in the back
-        else
-        {
-            rightFrontWheel.setPod((direction - turnAngle), power);
-        }
-        // if the right back wheel is in the front
-        if (closestAngle(direction, 315.0) >= 90.0)
-        {
-            rightBackWheel.setPod((direction + turnAngle), power);
-        }
-        // if it's in the back
-        else
-        {
-            rightBackWheel.setPod((direction - turnAngle), power);
-        }
+    private double[] wheelVector(double wheelX, double wheelY, double vx, double vy, double turnPower) {
+        // rotation contribution is the tangent vector at this corner for clockwise-positive spin
+        double wx = vx + turnPower * wheelY;
+        double wy = vy - turnPower * wheelX;
+        return new double[]{wx, wy};
     }
-    public void setSwerveDrive(double direction, double translatePower, double turnPower)
-    {
-        if ((translatePower == 0.0) && (turnPower != 0.0))
-        {
-            inplaceTurn(turnPower);
+
+    private void driveWheel(SwerveDrivePod pod, double wx, double wy) {
+        double speed = Math.hypot(wx, wy);
+        if (speed < STICK_DEADZONE) {
+            // no commanded motion for this wheel: hold current steer angle, just stop driving
+            pod.setSpeed(0.0);
+            return;
         }
-        else
-        {
-            translateTurn(direction, translatePower, turnPower);
-        }
+
+        double angle = Math.toDegrees(Math.atan2(wy, wx));
+        pod.setPod(angle, speed);
     }
 }
