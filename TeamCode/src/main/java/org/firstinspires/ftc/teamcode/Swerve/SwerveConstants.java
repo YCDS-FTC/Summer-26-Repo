@@ -10,8 +10,8 @@ public final class SwerveConstants {
     public static double TurnKi = 0.0;
     public static double TurnKd = 0.0;
 
-    public static final double TRACK_WIDTH = 16;
-    public static final double TRACK_LENGTH = 16;
+    public static double TRACK_WIDTH = 16;
+    public static double TRACK_LENGTH = 16;
 
     public static double STICK_DEADZONE = 0.05;
 
