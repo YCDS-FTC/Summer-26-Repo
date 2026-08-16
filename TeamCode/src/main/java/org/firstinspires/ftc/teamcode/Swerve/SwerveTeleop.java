@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Swerve;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,6 +15,7 @@ public class SwerveTeleop extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private final hackingHoundsHardware robot = new hackingHoundsHardware();
     private SwerveDriveCoordinator swerveDrive;
+    private FtcDashboard dashboard;
 
     /**
      * This method will be called once, when the INIT button is pressed.
@@ -28,6 +31,7 @@ public class SwerveTeleop extends OpMode {
                 drivetrain.rightFrontPod,
                 drivetrain.rightBackPod
         );
+        dashboard = FtcDashboard.getInstance();
 
         telemetry.addData("Status", "Initialized");
     }
@@ -69,7 +73,33 @@ public class SwerveTeleop extends OpMode {
             robot.imu.resetYaw();
         }
 
+        double leftFrontAngle = EncoderUtil.getEncoderAngle(robot.leftFrontEncoder);
+        double leftBackAngle = EncoderUtil.getEncoderAngle(robot.leftBackEncoder);
+        double rightFrontAngle = EncoderUtil.getEncoderAngle(robot.rightFrontEncoder);
+        double rightBackAngle = EncoderUtil.getEncoderAngle(robot.rightBackEncoder);
+
+        double leftFrontPower = robot.leftFront.getPower();
+        double leftBackPower = robot.leftBack.getPower();
+        double rightFrontPower = robot.rightFront.getPower();
+        double rightBackPower = robot.rightBack.getPower();
+
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("angle", angle);
+        packet.put("magnitude", magnitude);
+        packet.put("twist", twist);
+        packet.put("yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        packet.put("Left_Front_Angle", leftFrontAngle);
+        packet.put("Left_Back_Angle", leftBackAngle);
+        packet.put("Right_Front_Angle", rightFrontAngle);
+        packet.put("Right_Back_Angle", rightBackAngle);
+        packet.put("Left_Front_Power", leftFrontPower);
+        packet.put("Left_Back_Power", leftBackPower);
+        packet.put("Right_Front_Power", rightFrontPower);
+        packet.put("Right_Back_Power", rightBackPower);
+        dashboard.sendTelemetryPacket(packet);
+
     }
 
     /**
@@ -82,5 +112,3 @@ public class SwerveTeleop extends OpMode {
 
     }
 }
-
-
