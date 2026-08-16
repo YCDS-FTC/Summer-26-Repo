@@ -9,6 +9,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardware.hackingHoundsHardware;
 
+import gay.zharel.fateweaver.flight.FlightLogChannel;
+import gay.zharel.fateweaver.flight.FlightRecorder;
+import gay.zharel.fateweaver.schemas.LongSchema;
+import gay.zharel.fateweaver.schemas.DoubleSchema;
+
 @TeleOp(name = "Swerve TeleOp", group = "Swerve")
 public class SwerveTeleop extends OpMode {
 
@@ -16,6 +21,23 @@ public class SwerveTeleop extends OpMode {
     private final hackingHoundsHardware robot = new hackingHoundsHardware();
     private SwerveDriveCoordinator swerveDrive;
     private FtcDashboard dashboard;
+
+    FlightLogChannel<Long> timestamps;
+
+    FlightLogChannel<Double> angleLog;
+    FlightLogChannel<Double> magnitudeLog;
+    FlightLogChannel<Double> twistLog;
+    FlightLogChannel<Double> yawLog;
+
+    FlightLogChannel<Double> leftFrontAngleLog;
+    FlightLogChannel<Double> leftBackAngleLog;
+    FlightLogChannel<Double> rightFrontAngleLog;
+    FlightLogChannel<Double> rightBackAngleLog;
+
+    FlightLogChannel<Double> leftFrontPowerLog;
+    FlightLogChannel<Double> leftBackPowerLog;
+    FlightLogChannel<Double> rightFrontPowerLog;
+    FlightLogChannel<Double> rightBackPowerLog;
 
     /**
      * This method will be called once, when the INIT button is pressed.
@@ -31,7 +53,25 @@ public class SwerveTeleop extends OpMode {
                 drivetrain.rightFrontPod,
                 drivetrain.rightBackPod
         );
+
         dashboard = FtcDashboard.getInstance();
+
+        timestamps = FlightRecorder.createChannel("TIMESTAMP", LongSchema.INSTANCE);
+
+        angleLog = FlightRecorder.createChannel("Drive/Angle", DoubleSchema.INSTANCE);
+        magnitudeLog = FlightRecorder.createChannel("Drive/Magnitude", DoubleSchema.INSTANCE);
+        twistLog = FlightRecorder.createChannel("Drive/Twist", DoubleSchema.INSTANCE);
+        yawLog = FlightRecorder.createChannel("Drive/Yaw", DoubleSchema.INSTANCE);
+
+        leftFrontAngleLog = FlightRecorder.createChannel("Pods/LeftFront/Angle", DoubleSchema.INSTANCE);
+        leftBackAngleLog = FlightRecorder.createChannel("Pods/LeftBack/Angle", DoubleSchema.INSTANCE);
+        rightFrontAngleLog = FlightRecorder.createChannel("Pods/RightFront/Angle", DoubleSchema.INSTANCE);
+        rightBackAngleLog = FlightRecorder.createChannel("Pods/RightBack/Angle", DoubleSchema.INSTANCE);
+
+        leftFrontPowerLog = FlightRecorder.createChannel("Pods/LeftFront/Power", DoubleSchema.INSTANCE);
+        leftBackPowerLog = FlightRecorder.createChannel("Pods/LeftBack/Power", DoubleSchema.INSTANCE);
+        rightFrontPowerLog = FlightRecorder.createChannel("Pods/RightFront/Power", DoubleSchema.INSTANCE);
+        rightBackPowerLog = FlightRecorder.createChannel("Pods/RightBack/Power", DoubleSchema.INSTANCE);
 
         telemetry.addData("Status", "Initialized");
     }
@@ -100,6 +140,21 @@ public class SwerveTeleop extends OpMode {
         packet.put("Right_Back_Power", rightBackPower);
         dashboard.sendTelemetryPacket(packet);
 
+        timestamps.put(System.nanoTime());
+        angleLog.put(angle);
+        magnitudeLog.put(magnitude);
+        twistLog.put(twist);
+        yawLog.put(robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+        leftFrontAngleLog.put(leftFrontAngle);
+        leftBackAngleLog.put(leftBackAngle);
+        rightFrontAngleLog.put(rightFrontAngle);
+        rightBackAngleLog.put(rightBackAngle);
+
+        leftFrontPowerLog.put(leftFrontPower);
+        leftBackPowerLog.put(leftBackPower);
+        rightFrontPowerLog.put(rightFrontPower);
+        rightBackPowerLog.put(rightBackPower);
     }
 
     /**
