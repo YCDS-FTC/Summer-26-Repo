@@ -33,14 +33,20 @@ public class SwerveDrivePod {
         this.steerController = new PIDController(TurnKp, TurnKi, TurnKd);
     }
 
-
+    /**
+     * @return The pod angle including the offset so its much more accurate
+     */
     public double getAngle(){
         return EncoderUtil.getEncoderAngle(encoder) - offsetDeg;
     }
 
+    /**
+     * This should be the main way to control the swerve pods
+     * @param targetAngle Angle for the pod to go to
+     * @param targetDrivePower Power to apply to the wheel
+     */
     public void setPod(double targetAngle, double targetDrivePower){
 
-        steerController.setPID(TurnKp, TurnKi, TurnKd);
 
         double drivePower = targetDrivePower;
         double currentAngle = getAngle();
@@ -79,9 +85,19 @@ public class SwerveDrivePod {
         steerServo.setPower(steerControllerOutput);
     }
 
+    /**
+     * This dosent work with any of the optimisations in setPod
+     * Its best use is to stop the whee
+     * This should be used for mostly debugging and testing
+     * @param targetDrivePower Sets the speed to the wheel
+     */
     public void setSpeed(double targetDrivePower){
         driveMotor.setPower(targetDrivePower);
     }
+
+    /**
+     * Updates the steerController PID should only be used for testing and tuning
+     */
     public void updatePID(){
         steerController.setPID(TurnKp, TurnKi, TurnKd);
     }
