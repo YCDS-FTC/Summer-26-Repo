@@ -82,4 +82,7 @@ public class SwerveDrivePod {
     public void setSpeed(double targetDrivePower){
         driveMotor.setPower(targetDrivePower);
     }
+    public void updatePID(){
+        steerController.setPID(TurnKp, TurnKi, TurnKd);
+    }
 }
