@@ -116,10 +116,10 @@ public class SwerveTeleop extends OpMode {
             robot.imu.resetYaw();
         }
 
-        double leftFrontAngle = drivetrain.leftFrontPod.getAngle();
-        double leftBackAngle = drivetrain.leftBackPod.getAngle();
-        double rightFrontAngle = drivetrain.rightFrontPod.getAngle();
-        double rightBackAngle = drivetrain.rightBackPod.getAngle();
+        double leftFrontAngle = EncoderUtil.normalize360(drivetrain.leftFrontPod.getAngle());
+        double leftBackAngle = EncoderUtil.normalize360(drivetrain.leftBackPod.getAngle());
+        double rightFrontAngle = EncoderUtil.normalize360(drivetrain.rightFrontPod.getAngle());
+        double rightBackAngle = EncoderUtil.normalize360(drivetrain.rightBackPod.getAngle());
 
         double leftFrontPower = robot.leftFront.getPower();
         double leftBackPower = robot.leftBack.getPower();
