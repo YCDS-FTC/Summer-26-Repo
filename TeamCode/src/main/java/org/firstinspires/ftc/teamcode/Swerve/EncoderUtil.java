@@ -43,6 +43,10 @@ public final class EncoderUtil {
         return dir;
     }
 
+    public static double normalize360(double angle) {
+        return modulo(angle);
+    }
+
     private static double modulo(double angle) {
         double result = angle % 360.0;
         if (result < 0) {
