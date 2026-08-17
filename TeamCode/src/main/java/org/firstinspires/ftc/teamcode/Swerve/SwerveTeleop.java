@@ -19,6 +19,7 @@ public class SwerveTeleop extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private final hackingHoundsHardware robot = new hackingHoundsHardware();
+    private SwerveDrivetrain drivetrain;
     private SwerveDriveCoordinator swerveDrive;
     private FtcDashboard dashboard;
 
@@ -46,7 +47,7 @@ public class SwerveTeleop extends OpMode {
     public void init() {
         robot.init(hardwareMap);
 
-        SwerveDrivetrain drivetrain = new SwerveDrivetrain(robot);
+        drivetrain = new SwerveDrivetrain(robot);
         swerveDrive = new SwerveDriveCoordinator(
                 drivetrain.leftFrontPod,
                 drivetrain.leftBackPod,
@@ -115,10 +116,10 @@ public class SwerveTeleop extends OpMode {
             robot.imu.resetYaw();
         }
 
-        double leftFrontAngle = EncoderUtil.getEncoderAngle(robot.leftFrontEncoder);
-        double leftBackAngle = EncoderUtil.getEncoderAngle(robot.leftBackEncoder);
-        double rightFrontAngle = EncoderUtil.getEncoderAngle(robot.rightFrontEncoder);
-        double rightBackAngle = EncoderUtil.getEncoderAngle(robot.rightBackEncoder);
+        double leftFrontAngle = drivetrain.leftFrontPod.getAngle();
+        double leftBackAngle = drivetrain.leftBackPod.getAngle();
+        double rightFrontAngle = drivetrain.rightFrontPod.getAngle();
+        double rightBackAngle = drivetrain.rightBackPod.getAngle();
 
         double leftFrontPower = robot.leftFront.getPower();
         double leftBackPower = robot.leftBack.getPower();
