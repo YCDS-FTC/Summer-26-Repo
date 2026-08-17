@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Swerve;
 
-import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.STICK_DEADZONE;
+import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.STICK_DEAD_ZONE;
 import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.TRACK_LENGTH;
 import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.TRACK_WIDTH;
 //ima be crystal clear some of this is claude :/
@@ -32,8 +32,8 @@ public class SwerveDriveCoordinator {
      * @param turnPower     desired rotation rate, -1..1, positive = clockwise
      */
     public void setSwerveDrive(double direction, double translatePower, double turnPower) {
-        if (Math.abs(translatePower) < STICK_DEADZONE) translatePower = 0.0;
-        if (Math.abs(turnPower) < STICK_DEADZONE) turnPower = 0.0;
+        if (Math.abs(translatePower) < STICK_DEAD_ZONE) translatePower = 0.0;
+        if (Math.abs(turnPower) < STICK_DEAD_ZONE) turnPower = 0.0;
 
         double directionRadians = Math.toRadians(direction);
         double vectorX = translatePower * Math.cos(directionRadians); // forward component
@@ -77,7 +77,7 @@ public class SwerveDriveCoordinator {
 
     private void driveWheel(SwerveDrivePod pod, double wx, double wy) {
         double speed = Math.hypot(wx, wy);
-        if (speed < STICK_DEADZONE) {
+        if (speed < STICK_DEAD_ZONE) {
             // no commanded motion for this wheel: hold current steer angle, just stop driving
             pod.setSpeed(0.0);
             return;

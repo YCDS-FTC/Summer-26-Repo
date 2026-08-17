@@ -13,7 +13,7 @@ public final class SwerveConstants {
     public static double TRACK_WIDTH = 16;
     public static double TRACK_LENGTH = 16;
 
-    public static double STICK_DEADZONE = 0.05;
+    public static double STICK_DEAD_ZONE = 0.05;
 
     //right front 45
     //right back 135
