@@ -107,7 +107,7 @@ public class SwerveTeleop extends OpMode {
 
         double yaw = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-        //this part makes it field centric, remove to mkae robot centric
+        //this part makes it field centric, remove to make robot centric
         angle -= yaw;
 
         swerveDrive.setSwerveDrive(angle, magnitude, twist);
