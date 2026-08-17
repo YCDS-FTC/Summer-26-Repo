@@ -15,7 +15,7 @@ public final class EncoderUtil {
      * This is not recommended for general use
      * This should be used for mostly debugging and testing
      * @param encoder Pass in which ANALOG encoder you want to read against a 3.3 reference voltage
-     * @return
+     * @return The encoder angle
      */
     public static double getEncoderAngle(AnalogInput encoder) {
         return encoder.getVoltage() / REF_VOLTAGE * 360.0;
@@ -43,6 +43,11 @@ public final class EncoderUtil {
         return dir;
     }
 
+    /**
+     * Wraps any angle into the range 0 - 360  for display/telemetry purposes.
+     * @param angle Angle in degrees
+     * @return Equivalent angle in 0 - 360
+     */
     public static double normalize360(double angle) {
         return modulo(angle);
     }
