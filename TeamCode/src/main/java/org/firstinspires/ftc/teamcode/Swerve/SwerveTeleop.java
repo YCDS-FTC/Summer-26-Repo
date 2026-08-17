@@ -104,8 +104,10 @@ public class SwerveTeleop extends OpMode {
         double magnitude = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         double twist = gamepad1.right_stick_x;
 
+        double yaw = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
         //this part makes it field centric, remove to mkae robot centric
-        angle -= robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        angle -= yaw;
 
         swerveDrive.setSwerveDrive(angle, magnitude, twist);
 
@@ -129,7 +131,7 @@ public class SwerveTeleop extends OpMode {
         packet.put("angle", angle);
         packet.put("magnitude", magnitude);
         packet.put("twist", twist);
-        packet.put("yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        packet.put("yaw", yaw);
         packet.put("Left_Front_Angle", leftFrontAngle);
         packet.put("Left_Back_Angle", leftBackAngle);
         packet.put("Right_Front_Angle", rightFrontAngle);
@@ -144,7 +146,7 @@ public class SwerveTeleop extends OpMode {
         angleLog.put(angle);
         magnitudeLog.put(magnitude);
         twistLog.put(twist);
-        yawLog.put(robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        yawLog.put(yaw);
 
         leftFrontAngleLog.put(leftFrontAngle);
         leftBackAngleLog.put(leftBackAngle);
