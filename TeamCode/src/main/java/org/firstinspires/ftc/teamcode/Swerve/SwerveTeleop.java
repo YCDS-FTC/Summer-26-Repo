@@ -75,6 +75,7 @@ public class SwerveTeleop extends OpMode {
         rightBackPowerLog = FlightRecorder.createChannel("Pods/RightBack/Power", DoubleSchema.INSTANCE);
 
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
     }
 
     /**
@@ -127,6 +128,7 @@ public class SwerveTeleop extends OpMode {
         double rightBackPower = robot.rightBack.getPower();
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.update();
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("angle", angle);
