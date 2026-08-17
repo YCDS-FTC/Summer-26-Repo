@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Swerve;
 import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.STICK_DEADZONE;
 import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.TRACK_LENGTH;
 import static org.firstinspires.ftc.teamcode.Swerve.SwerveConstants.TRACK_WIDTH;
-
+//ima be crystal clear some of this is claude :/
 /**
  * Axis convention (matches the corner-angle comments in SwerveConstants):
  * x = forward(+)/backward(-), y = right(+)/left(-), angle = atan2(y, x) in degrees,
