@@ -102,7 +102,9 @@ public class SwerveTeleop extends OpMode {
     @Override
     public void loop() {
 
-        double angle = Math.toDegrees(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x));
+
+        //I know this seems wrong but its because I wanted positive angle to be clockwise yaw motion like the robot moves clockwise when looking top down
+        double angle = Math.toDegrees(Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y));
         double magnitude = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         double twist = gamepad1.right_stick_x;
 
